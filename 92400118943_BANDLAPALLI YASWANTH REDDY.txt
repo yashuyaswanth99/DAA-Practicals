@@ -1,81 +1,64 @@
-                                          PRACTICAL 02
 #include <iostream>
-#include <vector>
 #include <chrono>
+
 using namespace std;
 using namespace chrono;
 
-int linearSearch(const vector<int>& arr, int key)
+// Iterative factorial function
+unsigned long long iterativeFact(int value)
 {
-    for (int i = 0; i < arr.size(); i++)
+    unsigned long long fact = 1;
+
+    while (value > 1)
     {
-        if (arr[i] == key)
-            return i;
+        fact *= value;
+        value--;
     }
-    return -1;
+
+    return fact;
 }
-int binarySearch(const vector<int>& arr, int key)
+
+// Recursive factorial function
+unsigned long long recursiveFact(int value)
 {
-    int left = 0;
-    int right = arr.size() - 1;
-
-    while (left <= right)
-    {
-        int mid = left + (right - left) / 2;
-
-        if (arr[mid] == key)
-            return mid;
-
-        if (arr[mid] < key)
-            left = mid + 1;
-        else
-            right = mid - 1;
-    }
-
-    return -1;
+    return (value <= 1) ? 1 : value * recursiveFact(value - 1);
 }
 
 int main()
 {
-    const int SIZE = 100000;
-    vector<int> arr(SIZE);
+    int number;
 
-    for (int i = 0; i < SIZE; i++)
+    cout << "Enter a non-negative integer (e.g., 20): ";
+
+    cin >> number;
+
+    if (cin.fail() || number < 0)
     {
-        arr[i] = i + 1;
+        cout << "Invalid input! Please enter a non-negative integer." << endl;
+        return 1;
     }
 
-    int key;
-    cout << "Enter element to search: ";
-    cin >> key;
+    high_resolution_clock::time_point begin1 = high_resolution_clock::now();
+    unsigned long long ans1 = iterativeFact(number);
+    high_resolution_clock::time_point finish1 = high_resolution_clock::now();
 
-    auto start = high_resolution_clock::now();
-    int index = linearSearch(arr, key);
-    auto end = high_resolution_clock::now();
+    auto time1 = duration_cast<nanoseconds>(finish1 - begin1);
 
-    cout << "\nLinear Search\n";
-    if (index != -1)
-        cout << "Element found at index " << index << endl;
-    else
-        cout << "Element not found" << endl;
+    high_resolution_clock::time_point begin2 = high_resolution_clock::now();
+    unsigned long long ans2 = recursiveFact(number);
+    high_resolution_clock::time_point finish2 = high_resolution_clock::now();
 
-    cout << "Time Taken: "
-         << duration_cast<microseconds>(end - start).count()
-         << " microseconds" << endl;
+    auto time2 = duration_cast<nanoseconds>(finish2 - begin2);
 
-    start = high_resolution_clock::now();
-    index = binarySearch(arr, key);
-    end = high_resolution_clock::now();
+    cout << "\n--- Results for " << number << "! ---" << endl;
 
-    cout << "\nBinary Search\n";
-    if (index != -1)
-        cout << "Element found at index " << index << endl;
-    else
-        cout << "Element not found" << endl;
+    cout << "Iterative Result : " << ans1 << endl;
+    cout << "Iterative Time   : " << time1.count() << " ns" << endl;
 
-    cout << "Time Taken: "
-         << duration_cast<microseconds>(end - start).count()
-         << " microseconds" << endl;
+    cout << "-------------------------------" << endl;
+
+    cout << "Recursive Result : " << ans2 << endl;
+    cout << "Recursive Time   : " << time2.count() << " ns" << endl;
 
     return 0;
 }
