@@ -1,4 +1,4 @@
-                                                                                                 PRACTICAL 03
+                                                    PRACTICAL 03
 
 #include <iostream>
 #include <vector>
