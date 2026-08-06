@@ -4,8 +4,6 @@
 
 using namespace std;
 using namespace chrono;
-
-// Iterative factorial function
 unsigned long long iterativeFact(int value)
 {
     unsigned long long fact = 1;
@@ -18,8 +16,6 @@ unsigned long long iterativeFact(int value)
 
     return fact;
 }
-
-// Recursive factorial function
 unsigned long long recursiveFact(int value)
 {
     return (value <= 1) ? 1 : value * recursiveFact(value - 1);
