@@ -1,0 +1,111 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <stack>
+#include <chrono>
+
+using namespace std;
+using namespace std::chrono;
+
+class Network {
+private:
+    int nodes;
+    vector<vector<int>> graph;
+
+public:
+    Network(int n) : nodes(n), graph(n) {}
+
+    void connect(int a, int b) {
+        graph[a].emplace_back(b);
+        graph[b].emplace_back(a);   // Remove for directed graph
+    }
+
+    void depthFirstSearch(int source) {
+        vector<bool> visited(nodes, false);
+        stack<int> st;
+
+        st.push(source);
+
+        while (!st.empty()) {
+            int current = st.top();
+            st.pop();
+
+            if (visited[current])
+                continue;
+
+            visited[current] = true;
+            cout << current << " ";
+
+            for (int i = graph[current].size() - 1; i >= 0; i--) {
+                int next = graph[current][i];
+                if (!visited[next])
+                    st.push(next);
+            }
+        }
+    }
+
+    void breadthFirstSearch(int source) {
+        vector<bool> visited(nodes, false);
+        queue<int> q;
+
+        visited[source] = true;
+        q.push(source);
+
+        while (!q.empty()) {
+            int current = q.front();
+            q.pop();
+
+            cout << current << " ";
+
+            for (int next : graph[current]) {
+                if (!visited[next]) {
+                    visited[next] = true;
+                    q.push(next);
+                }
+            }
+        }
+    }
+};
+
+int main() {
+    int vertices, edges;
+
+    cout << "Enter number of vertices: ";
+    cin >> vertices;
+
+    Network net(vertices);
+
+    cout << "Enter number of edges: ";
+    cin >> edges;
+
+    cout << "Enter edges (u v):\n";
+    for (int i = 0; i < edges; i++) {
+        int u, v;
+        cin >> u >> v;
+        net.connect(u, v);
+    }
+
+    int startVertex;
+    cout << "Enter starting vertex: ";
+    cin >> startVertex;
+
+    auto dfsStart = high_resolution_clock::now();
+    cout << "\nDFS Traversal: ";
+    net.depthFirstSearch(startVertex);
+    auto dfsEnd = high_resolution_clock::now();
+
+    auto dfsDuration = duration_cast<nanoseconds>(dfsEnd - dfsStart);
+
+    auto bfsStart = high_resolution_clock::now();
+    cout << "\n\nBFS Traversal: ";
+    net.breadthFirstSearch(startVertex);
+    auto bfsEnd = high_resolution_clock::now();
+
+    auto bfsDuration = duration_cast<nanoseconds>(bfsEnd - bfsStart);
+
+    cout << "\n\nExecution Time:";
+    cout << "\nDFS: " << dfsDuration.count() << " ns";
+    cout << "\nBFS: " << bfsDuration.count() << " ns";
+
+    return 0;
+}
