@@ -1,0 +1,29 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int coinChange(vector<int> coins, int amount) {
+    vector<int> dp(amount + 1, amount + 1);
+
+    dp[0] = 0;
+
+    for (int i = 1; i <= amount; i++) {
+        for (int coin : coins) {
+            if (coin <= i) {
+                dp[i] = min(dp[i], 1 + dp[i - coin]);
+            }
+        }
+    }
+
+    return dp[amount];
+}
+
+int main() {
+    vector<int> coins = {1, 2, 2};
+    int amount = 4;
+
+    cout << "Minimum coins = " << coinChange(coins, amount);
+
+    return 0;
+}
