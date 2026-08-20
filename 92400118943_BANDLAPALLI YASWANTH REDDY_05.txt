@@ -1,0 +1,60 @@
+                                                                   Practical 05
+
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    vector<int> weight = {1, 3, 4, 5};
+    vector<int> value = {15, 50, 60, 90};
+
+    int capacity = 8;
+    int n = weight.size();
+
+    // DP table
+    vector<vector<int>> dp(n + 1, vector<int>(capacity + 1, 0));
+
+    // Fill DP table
+    for (int i = 1; i <= n; i++) {
+        for (int w = 1; w <= capacity; w++) {
+
+            if (weight[i - 1] <= w) {
+                dp[i][w] = max(
+                    value[i - 1] + dp[i - 1][w - weight[i - 1]],
+                    dp[i - 1][w]
+                );
+            }
+            else {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    // Find which items were selected
+    vector<int> selected(n, 0);
+
+    int w = capacity;
+
+    for (int i = n; i > 0; i--) {
+
+        // If value changed, item was selected
+        if (dp[i][w] != dp[i - 1][w]) {
+            selected[i - 1] = 1;
+            w = w - weight[i - 1];
+        }
+    }
+
+    // Output
+    cout << "Selected items: ";
+
+    for (int i = 0; i < n; i++) {
+        cout << selected[i] << " ";
+    }
+
+    cout << endl;
+
+    cout << "Maximum value: " << dp[n][capacity] << endl;
+
+    return 0;
+}
